@@ -58,20 +58,30 @@ public class QuantumWordSearch {
 
     private boolean isValidWord() {
         String word = "";
-        for(Tile tile : selectedTiles) {
+        for (Tile tile : selectedTiles) {
             word += tile.getLetter();
         }
-        if(wordList.contains(word)) {
-            int index  = wordList.indexOf(word);
-            wordList.set(index, "\\u2713"+word); //adds checkmark to show that you completed this word
+        if (wordList.contains(word)) {
+            int index = wordList.indexOf(word);
+            wordList.set(index, "+" + word); // adds checkmark to show that you completed this word
             return true;
         }
         return false;
     }
 
     public boolean isValidMove(Tile tile) {
-        if (selectedTiles.contains(tile)) {
-            return false; // Tile already selected
+        // Square is already being used
+        for (Tile t : selectedTiles) {
+            if (t.getRow() == tile.getRow() && t.getCol() == tile.getCol()) {
+                return false;
+            }
+        }
+        // Check if the new tile is adjacent to the last tile selected
+        if (!selectedTiles.isEmpty()) {
+            Tile lastTile = selectedTiles.get(selectedTiles.size() - 1);
+            if (Math.abs(tile.getRow() - lastTile.getRow()) > 1 || Math.abs(tile.getCol() - lastTile.getCol()) > 1) {
+                return false;
+            }
         }
         if (selectedTiles.size() == 1) {
             return true; // Tile can always form a straight line when there is only one other tile
@@ -86,19 +96,45 @@ public class QuantumWordSearch {
 
             // Check if the new tile aligns with the direction of the existing line
             if (isHorizontal && tile.getRow() != selectedTiles.get(0).getRow()) {
-                return false; // Not in the same row
+                return false;
             } else if (isVertical && tile.getCol() != selectedTiles.get(0).getCol()) {
-                return false; // Not in the same column
+                return false;
             } else if (isDiagonal && (Math.abs(tile.getRow() - selectedTiles.get(0).getRow()) != Math
                     .abs(tile.getCol() - selectedTiles.get(0).getCol()))) {
-                return false; // Not in the same diagonal direction
+                return false;
             }
         }
-
         return true;
     }
 
     public void displayWordSearch() {
+        Tile[][] currentBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
+        // creating a temp board
+        if(isOnFirstBoard == true) {
+            for (int i = 0; i < firstBoard.length; i++) {
+                for (int j = 0; j < currentBoard[i].length; j++) {
+                    currentBoard[i][j] = firstBoard[i][j];
+                }
+            }
+        } else {
+            for (int i = 0; i < secondBoard.length; i++) {
+                for (int j = 0; j < currentBoard[i].length; j++) {
+                    currentBoard[i][j] = secondBoard[i][j];
+                }
+            }
+        }
+        // making sure that the temp board doesn't overwrite the selectedTiles and the correctTiles
+        for(Tile tile : selectedTiles) {
+            int row = tile.getRow();
+            int col =tile.getCol();
+            currentBoard[row][col] = tile;
+        }
+        for(Tile tile : correctTiles) {
+            int row = tile.getRow();
+            int col = tile.getCol();
+            currentBoard[row][col] = tile;
+        }
+
         StringBuilder boardDisplay = new StringBuilder("");
         // adding the column numbers
         for (int col = 0; col <= Y_BOARD_DIM; col++) {
@@ -109,7 +145,7 @@ public class QuantumWordSearch {
         for (int row = 0; row < X_BOARD_DIM; row++) {
             boardDisplay.append(row + 1).append(" ");
             for (int col = 0; col < Y_BOARD_DIM; col++) {
-                boardDisplay.append(firstBoard[row][col].getLetter());
+                boardDisplay.append(currentBoard[row][col].getLetter());
                 if (col < Y_BOARD_DIM - 1) {
                     boardDisplay.append(" ");
                 }
@@ -120,29 +156,32 @@ public class QuantumWordSearch {
         boardDisplay.append("\n");
         boardDisplay.append("WORD LIST:\n");
         IntStream.range(0, wordList.size())
-            .forEach(i -> {
-                boardDisplay.append(String.format("%-10s", wordList.get(i)));
-                if (i % 2 == 1) {
-                    boardDisplay.append("\n");
-                }
-            }
-        );
+                .forEach(i -> {
+                    boardDisplay.append(String.format("%-10s", wordList.get(i)));
+                    if (i % 2 == 1) {
+                        boardDisplay.append("\n");
+                    }
+                });
         // adding the chosen letters to a string for user reference
         boardDisplay.append("\n");
         boardDisplay.append("Selected Letters: ");
         for (Tile tile : selectedTiles) {
             boardDisplay.append(tile.getLetter());
         }
-
         System.out.println(boardDisplay.toString());
     }
 
     public static void main(String[] args) throws IOException {
         QuantumWordSearch qws = new QuantumWordSearch("data/example.csv");
         qws.selectTile(qws.firstBoard[0][0]);
-        qws.selectTile(qws.firstBoard[1][0]);
         qws.selectTile(qws.firstBoard[0][1]);
-        qws.selectTile(qws.firstBoard[2][0]);
+        qws.selectTile(qws.firstBoard[0][2]);
+        qws.selectTile(qws.firstBoard[0][3]);
+        qws.selectTile(qws.secondBoard[0][4]);
+        qws.selectTile(qws.firstBoard[0][6]);
+        qws.selectTile(qws.secondBoard[0][5]);
+        qws.selectTile(qws.secondBoard[0][6]);
+        qws.selectTile(qws.secondBoard[0][7]);
         qws.displayWordSearch();
     }
 }
