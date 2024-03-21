@@ -107,35 +107,20 @@ public class QuantumWordSearch {
         return true;
     }
 
-    public void displayWordSearch() {
-        Tile[][] currentBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
-        // creating a temp board
-        if(isOnFirstBoard == true) {
-            for (int i = 0; i < firstBoard.length; i++) {
-                for (int j = 0; j < currentBoard[i].length; j++) {
-                    currentBoard[i][j] = firstBoard[i][j];
-                }
-            }
-        } else {
-            for (int i = 0; i < secondBoard.length; i++) {
-                for (int j = 0; j < currentBoard[i].length; j++) {
-                    currentBoard[i][j] = secondBoard[i][j];
-                }
-            }
-        }
-        // making sure that the temp board doesn't overwrite the selectedTiles and the correctTiles
-        for(Tile tile : selectedTiles) {
-            int row = tile.getRow();
-            int col =tile.getCol();
-            currentBoard[row][col] = tile;
-        }
-        for(Tile tile : correctTiles) {
-            int row = tile.getRow();
-            int col = tile.getCol();
-            currentBoard[row][col] = tile;
-        }
+    public void toggleBoard() {
+        isOnFirstBoard = !isOnFirstBoard;
+    }
 
+    public void displayWordSearch() {
         StringBuilder boardDisplay = new StringBuilder("");
+        // create a temporary board
+        Tile[][] tempBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
+        for (int i = 0; i < X_BOARD_DIM; i++) {
+            System.arraycopy(isOnFirstBoard ? firstBoard[i] : secondBoard[i], 0, tempBoard[i], 0, Y_BOARD_DIM);
+        }
+        // update the temporary board with the selected and correct tiles
+        selectedTiles.forEach(t -> tempBoard[t.getRow()][t.getCol()] = t);
+        correctTiles.forEach(t -> tempBoard[t.getRow()][t.getCol()] = t);
         // adding the column numbers
         for (int col = 0; col <= Y_BOARD_DIM; col++) {
             boardDisplay.append(col).append(" ");
@@ -145,7 +130,7 @@ public class QuantumWordSearch {
         for (int row = 0; row < X_BOARD_DIM; row++) {
             boardDisplay.append(row + 1).append(" ");
             for (int col = 0; col < Y_BOARD_DIM; col++) {
-                boardDisplay.append(currentBoard[row][col].getLetter());
+                boardDisplay.append(tempBoard[row][col].getLetter());
                 if (col < Y_BOARD_DIM - 1) {
                     boardDisplay.append(" ");
                 }
@@ -182,6 +167,7 @@ public class QuantumWordSearch {
         qws.selectTile(qws.secondBoard[0][5]);
         qws.selectTile(qws.secondBoard[0][6]);
         qws.selectTile(qws.secondBoard[0][7]);
+        qws.toggleBoard();
         qws.displayWordSearch();
     }
 }
