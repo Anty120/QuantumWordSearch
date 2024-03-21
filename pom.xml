@@ -44,22 +44,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>quantumwordsearch.view.QuantumWordSearchCLI</mainClass>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
@@ -67,7 +51,7 @@
                     <execution>
                         <id>quantumwordsearch</id>
                         <configuration>
-                            <mainClass>quantumwordsearch/quantumwordsearch.view.QuantumWordSearchGUI</mainClass>
+                            <mainClass>wordsearch.view.QuantumWordSearchGUI</mainClass>
                         </configuration>
                     </execution>
                 </executions>

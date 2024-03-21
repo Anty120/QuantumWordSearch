@@ -111,16 +111,20 @@ public class QuantumWordSearch {
         isOnFirstBoard = !isOnFirstBoard;
     }
 
+    public Tile[][] getCurrentDisplayBoard() {
+        Tile[][] currentDisplayBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
+        for (int i = 0; i < X_BOARD_DIM; i++) {
+            System.arraycopy(isOnFirstBoard ? firstBoard[i] : secondBoard[i], 0, currentDisplayBoard[i], 0, Y_BOARD_DIM);
+        }
+        selectedTiles.forEach(t -> currentDisplayBoard[t.getRow()][t.getCol()] = t);
+        correctTiles.forEach(t -> currentDisplayBoard[t.getRow()][t.getCol()] = t);
+        return currentDisplayBoard;
+    }
+
     public void displayWordSearch() {
         StringBuilder boardDisplay = new StringBuilder("");
         // create a temporary board
-        Tile[][] tempBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
-        for (int i = 0; i < X_BOARD_DIM; i++) {
-            System.arraycopy(isOnFirstBoard ? firstBoard[i] : secondBoard[i], 0, tempBoard[i], 0, Y_BOARD_DIM);
-        }
-        // update the temporary board with the selected and correct tiles
-        selectedTiles.forEach(t -> tempBoard[t.getRow()][t.getCol()] = t);
-        correctTiles.forEach(t -> tempBoard[t.getRow()][t.getCol()] = t);
+        Tile[][] currentDisplayBoard = getCurrentDisplayBoard();
         // adding the column numbers
         for (int col = 0; col <= Y_BOARD_DIM; col++) {
             boardDisplay.append(col).append(" ");
@@ -130,7 +134,7 @@ public class QuantumWordSearch {
         for (int row = 0; row < X_BOARD_DIM; row++) {
             boardDisplay.append(row + 1).append(" ");
             for (int col = 0; col < Y_BOARD_DIM; col++) {
-                boardDisplay.append(tempBoard[row][col].getLetter());
+                boardDisplay.append(currentDisplayBoard[row][col].getLetter());
                 if (col < Y_BOARD_DIM - 1) {
                     boardDisplay.append(" ");
                 }
@@ -154,6 +158,14 @@ public class QuantumWordSearch {
             boardDisplay.append(tile.getLetter());
         }
         System.out.println(boardDisplay.toString());
+    }
+
+    public static int getX_BOARD_DIM() {
+        return X_BOARD_DIM;
+    }
+
+    public static int getY_BOARD_DIM() {
+        return Y_BOARD_DIM;
     }
 
     public static void main(String[] args) throws IOException {
