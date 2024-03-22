@@ -168,6 +168,10 @@ public class QuantumWordSearch {
         return Y_BOARD_DIM;
     }
 
+    public ArrayList<String> getWordList() {
+        return wordList;
+    }
+
     public static void main(String[] args) throws IOException {
         QuantumWordSearch qws = new QuantumWordSearch("data/example.csv");
         qws.selectTile(qws.firstBoard[0][0]);
