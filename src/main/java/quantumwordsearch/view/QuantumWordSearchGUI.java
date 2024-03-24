@@ -30,7 +30,7 @@ public class QuantumWordSearchGUI extends Application {
     private QuantumWordSearch qws;
     private GridPane wordGrid = new GridPane();
     private GridPane wordList = new GridPane();
-    private Tile[][] board;
+    private Button[][] buttons = new Button[QuantumWordSearch.getX_BOARD_DIM()][QuantumWordSearch.getY_BOARD_DIM()];
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -39,15 +39,16 @@ public class QuantumWordSearchGUI extends Application {
         System.out.print("Enter a filename: ");
         String filename = scanner.nextLine();
         scanner.close();
-        // begin game
+        // make game
         qws = new QuantumWordSearch(filename);
         // make word search board
         wordGrid.setAlignment(Pos.CENTER);
-        board = qws.getCurrentDisplayBoard();
+        Tile[][] board = qws.getCurrentBoard();
         for(int i = 0; i < QuantumWordSearch.getX_BOARD_DIM(); i++) {
             for(int j = 0; j < QuantumWordSearch.getY_BOARD_DIM(); j++) {
                 char letter = board[i][j].getLetter();
                 Button button = makeButton(letter);
+                buttons[i][j] = button;
                 wordGrid.add(button, j, i);
             }
         }
@@ -91,10 +92,17 @@ public class QuantumWordSearchGUI extends Application {
                 BorderStrokeStyle.DASHED, 
                 CornerRadii.EMPTY, 
                 BorderStroke.THIN)));
+        // make a button to toggle the board
+        Button toggleButton = new Button("Toggle Board");
+        toggleButton.setOnAction(e -> {
+            qws.toggleBoard();
+            updateGrid();
+        });
         // make a VBox to store the word grid and word list and extras
         VBox vbox = new VBox();
         vbox.getChildren().add(wordGrid);
         vbox.getChildren().add(scrollPane);
+        vbox.getChildren().add(toggleButton);
         // display word search board
         Scene scene = new Scene(vbox);
         stage.setTitle("Quantum Word Search");
@@ -116,6 +124,18 @@ public class QuantumWordSearchGUI extends Application {
         button.setText(String.valueOf(letter));
         button.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         return button;
+    }
+
+    public void updateGrid() {
+        Tile[][] board = qws.getCurrentBoard();
+        for(int i = 0; i< QuantumWordSearch.getX_BOARD_DIM(); i++) {
+            for(int j = 0; j < QuantumWordSearch.getY_BOARD_DIM(); j++) {
+                Tile tile = board[i][j];
+                Button button = buttons[i][j];
+                String letter = String.valueOf(tile.getLetter());
+                button.setText(letter);
+            }
+        }
     }
 
     public static void main(String[] args) {

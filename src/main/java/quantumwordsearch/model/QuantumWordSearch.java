@@ -111,7 +111,7 @@ public class QuantumWordSearch {
         isOnFirstBoard = !isOnFirstBoard;
     }
 
-    public Tile[][] getCurrentDisplayBoard() {
+    public Tile[][] getCurrentBoard() {
         Tile[][] currentDisplayBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
         for (int i = 0; i < X_BOARD_DIM; i++) {
             System.arraycopy(isOnFirstBoard ? firstBoard[i] : secondBoard[i], 0, currentDisplayBoard[i], 0, Y_BOARD_DIM);
@@ -124,7 +124,7 @@ public class QuantumWordSearch {
     public void displayWordSearch() {
         StringBuilder boardDisplay = new StringBuilder("");
         // create a temporary board
-        Tile[][] currentDisplayBoard = getCurrentDisplayBoard();
+        Tile[][] currentDisplayBoard = getCurrentBoard();
         // adding the column numbers
         for (int col = 0; col <= Y_BOARD_DIM; col++) {
             boardDisplay.append(col).append(" ");
