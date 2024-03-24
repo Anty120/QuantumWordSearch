@@ -25,12 +25,14 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import quantumwordsearch.model.QuantumWordSearch;
 import quantumwordsearch.model.Tile;
+import quantumwordsearch.model.Word;
 
 public class QuantumWordSearchGUI extends Application {
     private QuantumWordSearch qws;
     private GridPane wordGrid = new GridPane();
     private GridPane wordList = new GridPane();
     private Button[][] buttons = new Button[QuantumWordSearch.getX_BOARD_DIM()][QuantumWordSearch.getY_BOARD_DIM()];
+    private Label[] labels;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -70,14 +72,17 @@ public class QuantumWordSearchGUI extends Application {
         GridPane.setHalignment(titleLabel, HPos.CENTER);
         wordList.add(titleLabel, 0, 0, 3, 1); 
 
-        ArrayList<String> words = qws.getWordList();
+        ArrayList<Word> words = qws.getWordList();
+        labels = new Label[words.size()];
         int rowIndex = 1; // first row (index 0) occupied by the titleLabel
         for (int i = 0; i < words.size(); i += 3) {
             for (int j = 0; j < 3 && i + j < words.size(); j++) {
-                Label word = new Label(words.get(i + j));
-                word.setFont(Font.font(20));
-                GridPane.setHalignment(word, HPos.CENTER);
-                wordList.add(word, j, rowIndex);
+                Word word = words.get(i + j);
+                Label label = new Label(word.getWord());
+                label.setFont(Font.font(20));
+                labels[i+j] = label;
+                GridPane.setHalignment(label, HPos.CENTER);
+                wordList.add(label, j, rowIndex);
             }
             rowIndex++;
         }
@@ -154,7 +159,14 @@ public class QuantumWordSearchGUI extends Application {
     }
 
     public void updateWordList() {
-        //TO-DO
+        ArrayList<Word> words = qws.getWordList();
+        for(int i = 0; i < words.size(); i++) {
+            Word word = words.get(i);
+            if(word.isSolved()) {
+                Label label = labels[i];
+                label.setTextFill(Color.LIGHTGREEN);
+            }
+        }
     }
 
     public static void main(String[] args) {

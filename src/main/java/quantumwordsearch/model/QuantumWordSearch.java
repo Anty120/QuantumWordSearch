@@ -15,7 +15,7 @@ public class QuantumWordSearch {
     private boolean isOnFirstBoard = true;
     private ArrayList<Tile> selectedTiles = new ArrayList<>();
     private ArrayList<Tile> correctTiles = new ArrayList<>();
-    private ArrayList<String> wordList = new ArrayList<>();
+    private ArrayList<Word> wordList = new ArrayList<>();
 
     public QuantumWordSearch(String filename) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -39,7 +39,7 @@ public class QuantumWordSearch {
     private void populateAnswers(String line) {
         String words[] = line.split(",");
         for (String word : words) {
-            wordList.add(word);
+            wordList.add(new Word(word));
         }
     }
 
@@ -58,16 +58,19 @@ public class QuantumWordSearch {
     }
 
     private boolean isValidWord() {
-        String word = "";
+        StringBuilder wordBuilder = new StringBuilder();
         for (Tile tile : selectedTiles) {
-            word += tile.getLetter();
+            wordBuilder.append(tile.getLetter());
         }
-        if (wordList.contains(word)) {
-            int index = wordList.indexOf(word);
-            wordList.set(index, "+" + word); // adds checkmark to show that you completed this word
-            return true;
-        }
-        return false;
+        String word = wordBuilder.toString();
+        return wordList.stream()
+                .anyMatch(w -> {
+                    if (w.getWord().equals(word)) {
+                        w.setSolved(true);
+                        return true;
+                    }
+                    return false;
+                });
     }
 
     public boolean isValidMove(Tile tile) {
@@ -115,7 +118,8 @@ public class QuantumWordSearch {
     public Tile[][] getCurrentBoard() {
         Tile[][] currentDisplayBoard = new Tile[X_BOARD_DIM][Y_BOARD_DIM];
         for (int i = 0; i < X_BOARD_DIM; i++) {
-            System.arraycopy(isOnFirstBoard ? firstBoard[i] : secondBoard[i], 0, currentDisplayBoard[i], 0, Y_BOARD_DIM);
+            System.arraycopy(isOnFirstBoard ? firstBoard[i] : secondBoard[i], 0, currentDisplayBoard[i], 0,
+                    Y_BOARD_DIM);
         }
         selectedTiles.forEach(t -> currentDisplayBoard[t.getRow()][t.getCol()] = t);
         correctTiles.forEach(t -> currentDisplayBoard[t.getRow()][t.getCol()] = t);
@@ -147,7 +151,8 @@ public class QuantumWordSearch {
         boardDisplay.append("WORD LIST:\n");
         IntStream.range(0, wordList.size())
                 .forEach(i -> {
-                    boardDisplay.append(String.format("%-10s", wordList.get(i)));
+                    Word word = wordList.get(i);
+                    boardDisplay.append(String.format("%-10s", word.getWord()));
                     if (i % 2 == 1) {
                         boardDisplay.append("\n");
                     }
@@ -169,7 +174,7 @@ public class QuantumWordSearch {
         return Y_BOARD_DIM;
     }
 
-    public ArrayList<String> getWordList() {
+    public ArrayList<Word> getWordList() {
         return wordList;
     }
 
@@ -183,7 +188,7 @@ public class QuantumWordSearch {
 
     public static void main(String[] args) throws IOException {
         QuantumWordSearch qws = new QuantumWordSearch("data/example.csv");
-        qws.selectTile(0,0);
+        qws.selectTile(0, 0);
         qws.selectTile(0, 1);
         qws.selectTile(0, 2);
         qws.selectTile(0, 3);
