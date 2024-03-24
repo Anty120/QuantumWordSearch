@@ -145,25 +145,11 @@ public class QuantumWordSearchGUI extends Application {
         }
         for(Tile t : qws.getSelectedTiles()) {
             Button button = buttons[t.getRow()][t.getCol()];
-            button.setBorder(new Border(
-                new BorderStroke(
-                    Color.BLUE,
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    BorderStroke.MEDIUM
-                )
-            ));
+            button.setStyle("-fx-background-color: #87CEEB;");
         }
         for(Tile t : qws.getCorrectTiles()) {
             Button button = buttons[t.getRow()][t.getCol()];
-            button.setBorder(new Border(
-                new BorderStroke(
-                    Color.GREEN,
-                    BorderStrokeStyle.SOLID,
-                    CornerRadii.EMPTY,
-                    BorderStroke.MEDIUM
-                )
-            ));
+            button.setStyle("-fx-background-color: #00FF00;");
         }
     }
 
