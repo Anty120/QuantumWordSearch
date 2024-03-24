@@ -47,7 +47,7 @@ public class QuantumWordSearchGUI extends Application {
         for(int i = 0; i < QuantumWordSearch.getX_BOARD_DIM(); i++) {
             for(int j = 0; j < QuantumWordSearch.getY_BOARD_DIM(); j++) {
                 char letter = board[i][j].getLetter();
-                Button button = makeButton(letter);
+                Button button = makeButton(i, j, letter);
                 buttons[i][j] = button;
                 wordGrid.add(button, j, i);
             }
@@ -110,7 +110,7 @@ public class QuantumWordSearchGUI extends Application {
         stage.show();
     }
 
-    public Button makeButton(char letter) {
+    public Button makeButton(int row, int col, char letter) {
         Button button = new Button();
         button.setPrefSize(40, 40);
         button.setPadding(Insets.EMPTY);
@@ -123,6 +123,13 @@ public class QuantumWordSearchGUI extends Application {
         button.setStyle("-fx-background-color: #FFFFFF;");
         button.setText(String.valueOf(letter));
         button.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        button.setOnAction(e -> {
+            boolean success = qws.selectTile(row, col);
+            if(success) {
+                updateGrid();
+                updateWordList();
+            }
+        });
         return button;
     }
 
@@ -136,6 +143,32 @@ public class QuantumWordSearchGUI extends Application {
                 button.setText(letter);
             }
         }
+        for(Tile t : qws.getSelectedTiles()) {
+            Button button = buttons[t.getRow()][t.getCol()];
+            button.setBorder(new Border(
+                new BorderStroke(
+                    Color.BLUE,
+                    BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY,
+                    BorderStroke.MEDIUM
+                )
+            ));
+        }
+        for(Tile t : qws.getCorrectTiles()) {
+            Button button = buttons[t.getRow()][t.getCol()];
+            button.setBorder(new Border(
+                new BorderStroke(
+                    Color.GREEN,
+                    BorderStrokeStyle.SOLID,
+                    CornerRadii.EMPTY,
+                    BorderStroke.MEDIUM
+                )
+            ));
+        }
+    }
+
+    public void updateWordList() {
+        //TO-DO
     }
 
     public static void main(String[] args) {

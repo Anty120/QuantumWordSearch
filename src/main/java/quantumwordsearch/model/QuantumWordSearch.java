@@ -43,7 +43,8 @@ public class QuantumWordSearch {
         }
     }
 
-    public boolean selectTile(Tile tile) {
+    public boolean selectTile(int row, int col) {
+        Tile tile = isOnFirstBoard ? firstBoard[row][col] : secondBoard[row][col];
         if (isValidMove(tile)) {
             selectedTiles.add(tile);
 
@@ -172,17 +173,28 @@ public class QuantumWordSearch {
         return wordList;
     }
 
+    public ArrayList<Tile> getSelectedTiles() {
+        return selectedTiles;
+    }
+
+    public ArrayList<Tile> getCorrectTiles() {
+        return correctTiles;
+    }
+
     public static void main(String[] args) throws IOException {
         QuantumWordSearch qws = new QuantumWordSearch("data/example.csv");
-        qws.selectTile(qws.firstBoard[0][0]);
-        qws.selectTile(qws.firstBoard[0][1]);
-        qws.selectTile(qws.firstBoard[0][2]);
-        qws.selectTile(qws.firstBoard[0][3]);
-        qws.selectTile(qws.secondBoard[0][4]);
-        qws.selectTile(qws.firstBoard[0][6]);
-        qws.selectTile(qws.secondBoard[0][5]);
-        qws.selectTile(qws.secondBoard[0][6]);
-        qws.selectTile(qws.secondBoard[0][7]);
+        qws.selectTile(0,0);
+        qws.selectTile(0, 1);
+        qws.selectTile(0, 2);
+        qws.selectTile(0, 3);
+        qws.toggleBoard();
+        qws.selectTile(0, 4);
+        qws.toggleBoard();
+        qws.selectTile(0, 6);
+        qws.toggleBoard();
+        qws.selectTile(0, 5);
+        qws.selectTile(0, 6);
+        qws.selectTile(0, 7);
         qws.toggleBoard();
         qws.displayWordSearch();
     }
