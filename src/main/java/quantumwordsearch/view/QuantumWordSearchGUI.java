@@ -31,7 +31,7 @@ import quantumwordsearch.model.Word;
 public class QuantumWordSearchGUI extends Application {
     private QuantumWordSearch qws;
     private GridPane wordGrid = new GridPane();
-    private GridPane wordList = new GridPane();
+    private ScrollPane scrollList; // wordList that can be scrollable if needed
     private Button[][] buttons = new Button[QuantumWordSearch.getX_BOARD_DIM()][QuantumWordSearch.getY_BOARD_DIM()];
     private Label[] labels;
 
@@ -39,7 +39,7 @@ public class QuantumWordSearchGUI extends Application {
     public void start(Stage stage) throws Exception {
         initializeGameFromFile();
         makeWordGrid();
-        makeWordList();
+        makeScrollList();
         // make a button to toggle the board
         Button toggleButton = new Button("Toggle Board");
         toggleButton.setOnAction(e -> {
@@ -49,7 +49,7 @@ public class QuantumWordSearchGUI extends Application {
         // make a Vbox to store the word grid and word list
         VBox vbox = new VBox();
         vbox.getChildren().add(wordGrid);
-        vbox.getChildren().add(wordList);
+        vbox.getChildren().add(scrollList);
         vbox.getChildren().add(toggleButton);
         // display word search board
         Scene scene = new Scene(vbox);
@@ -79,7 +79,8 @@ public class QuantumWordSearchGUI extends Application {
         }
     }
 
-    public void makeWordList() {
+    public void makeScrollList() {
+        GridPane wordList = new GridPane();
         wordList.setHgap(20);
         wordList.setVgap(0);
         wordList.setPadding(new Insets(10, 10, 10, 10));
@@ -113,13 +114,12 @@ public class QuantumWordSearchGUI extends Application {
             rowIndex++;
         }
         // making scrollpane so that we can fit lots of words if needed
-        ScrollPane scrollPane = new ScrollPane(wordList);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setPrefWidth(100);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollList = new ScrollPane(wordList);
+        scrollList.setFitToWidth(true);
+        scrollList.setFitToHeight(true);
+        scrollList.setPrefWidth(100);
+        scrollList.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
     }
-
     public Button makeButton(int row, int col, char letter) {
         Button button = new Button();
         button.setPrefSize(40, 40);
